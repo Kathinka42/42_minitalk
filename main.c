@@ -7,8 +7,8 @@
 
 
 
-/*	Signal handlers run asyncronously, which meands the can interrupt the code at
-*	any point. Therefore you can only signal-save functions, i.e. write. The
+/*	Signal handlers run asyncronously, which means they can interrupt the code at
+*	any point. Therefore you can only use signal-save functions, i.e. write. The
 *	manual lists save functions.
 *	https://www.youtube.com/watch?v=PErrlOx3LYE
 */
