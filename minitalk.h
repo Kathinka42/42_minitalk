@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 10:18:54 by kczichow          #+#    #+#             */
-/*   Updated: 2022/09/22 14:30:39 by kczichow         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:37:02 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "libft.h"
+#include "libft/libft.h"
 
 // struct  sigaction
 // {
