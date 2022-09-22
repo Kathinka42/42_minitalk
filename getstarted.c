@@ -1,6 +1,6 @@
 The objective is to send any kind of message from client to server, using only two UNIX signals, respectively
-SIGUSR1 and SIGUSR2. Each character can be translated into its bit equivalant, usually containing of 8
-bits. the preferred method to complete this task is to use bitshifting.
+SIGUSR1 and SIGUSR2. Each character can be translated into its bit equivalant, containing of 8
+bits. The preferred method to complete this task is to use bitshifting.
 #include <signal.h>
 
 kill(pid, SIGUSR1);
