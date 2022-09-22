@@ -6,7 +6,7 @@
 #    By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/22 13:50:30 by kczichow          #+#    #+#              #
-#    Updated: 2022/09/22 16:28:12 by kczichow         ###   ########.fr        #
+#    Updated: 2022/09/22 16:41:31 by kczichow         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ RM			= 	rm -f
 all:	server	client
 
 server:	libft server.o
-			$(CC) $(CFLAGS) -o $@ $< -Llibft -lft
+			$(CC) $(CFLAGS) -o $@ $< -Llibft -l ft
 
 client:	$(LIBFT) client.o
 			$(CC) $(CFLAGS) -o $@ $< -Llibft -lft
