@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 14:20:50 by kczichow          #+#    #+#             */
-/*   Updated: 2022/09/22 15:45:57 by kczichow         ###   ########.fr       */
+/*   Updated: 2022/09/26 17:35:06 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 *	i.e. send notifications. The kill function sends the signal.
 */
 
-
 /*	Signal handlers run asyncronously, which means they can interrupt the code
 *	at any point. Therefore you can only use signal-save functions, i.e. write.
 *	The manual lists save functions.
@@ -25,11 +24,19 @@
 
 void signal_handler(int signal)
 {
-    write(STDOUT_FILENO, "Seg Fault", 20);
+    static unsigned char	character;
+	int						i;
+	
+	character = 0;
+	ft_putstr_fd("TEST", 1);
+	if (signal == SIGUSR1)
+	{
+		character 
+	}
 }
 
 /*	Sigaction is to be preferred over the signal function according to the
-*	manual, because the behavious of signal varies across UNIX versions and
+*	manual, because the behaviour of signal varies across UNIX versions and
 *	has varied across Linux versions as well.
 *	To use the sigaction function, you have to create a struct.
 *	The sigaction function reacts, whenever a specific signal is sent and calls
@@ -40,39 +47,15 @@ void signal_handler(int signal)
 
 int	main()
 {
-	struct sigaction	sa;
+	struct sigaction	server;
 	
+	server.sa_handler = &signal_handler;
+	//server.sa_flags = SA_RESTART; // needed in combination with scanf;
+
 	ft_putnbr_fd(getpid(), 1);
-
-	sa.sa_handler = &signal_handler;
-	//sa.sa_flags = SA_RESTART; // needed in combination with scanf;
-
-	sigaction(SIGUSR1, &sa, NULL);
-
-
-	// size_t pid;
-	// int	x;
-	// int	y;
-	// x = 'a';
-	// y = x << 1;
-
-	// printf("x = %c\n", x);
-	// printf("y = %c\n", y);
-
-
-	//pid_t getpid(void);
-	// pid = getpid();
-	//printf("%zu", pid);
-	// kill(pid, SIGUSR1);
-	// kill(pid, SIGUSR2);
-	// signal(SIGINT, signal_handler);
-	// signal(SIGTERM, signal_handler);
-	// while (1)
-	// {
-	// 	printf("I won't die %d\n", getpid());
-	// }
-	// signal(SIGUSR2, signal_handler);
-	return (0);
-	
+	ft_putchar_fd('\n', 1);
+	sigaction(SIGUSR1, &server, NULL);
+	sigaction(SIGUSR2, &server, NULL);
+	sleep(100);
 	return (0);
 }
