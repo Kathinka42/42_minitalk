@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:19:58 by kczichow          #+#    #+#             */
-/*   Updated: 2022/09/26 17:37:58 by kczichow         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:12:29 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,33 +60,36 @@
 
 void	mt_transfer_signal(pid_t pid, char *str)
 {
-	int				bit_position;
+	int				bit;
 	unsigned char	c;
 
 	while (*str)
 	{
 		c = *str;
-		bit_position = 0;
-		while (bit_position < 8)
+		bit = 0;
+		while (bit < 8)
 		{
-			if (c << bit_position & 128)
+			if (c << bit & 128)
 			{
-				printf("1");
+				ft_putchar_fd('1', 1);
 				kill(pid, SIGUSR1);
 			}
 			else
 			{
-				printf("0");
+				ft_putchar_fd('0', 1);
 				kill(pid, SIGUSR2);
 			}
 			usleep(200);
-			bit_position++;
+			bit++;
 		}
 	str++;
 	}
-	while (bit_position--)
-		printf("0");
+	while (bit--)
+	{
+		ft_putchar_fd('0', 1);
 		kill(pid, SIGUSR2);
+		usleep(200);
+	}
 }
 
 int	main(int argc, char *argv[])
