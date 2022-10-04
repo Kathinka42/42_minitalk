@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 14:20:50 by kczichow          #+#    #+#             */
-/*   Updated: 2022/09/27 10:05:57 by kczichow         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:11:18 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,40 @@
 
 /*	With signals you cannot send any data, just communicate between processes
 *	i.e. send notifications. The kill function sends the signal.
+*
+*	Alternatively the bit shifting part can be performed the other way round:
+*	static int				bit = 7;
+*	if (signal == SIGUSR1)
+*		c += 1 << bit;
+*	bit--; 
+*	if (bit < 0)
+*	{
+*		ft_putchar_fd(c, 1);
+*		bit = 7;
+*		c = 0;
+*	}
 */
 
+void mt_decode_binary(int signal)
+{
+	static unsigned char	c = 0;
+	static int				bit = 0;
+	
+	if (bit < 8 && signal == SIGUSR1)
+		c += 128 >> bit;
+	bit++; 
+	if (bit == 8)
+	{
+		//write(1, &c, 1);
+		ft_putchar_fd(c, 1);
+		if (c == 0)
+		{
+			printf("End");		
+		}
+		bit = 0;
+		c = 0;
+	}
+}
 
 /*	MT_SIGNAL_HANDLER
 *	--------------------
@@ -29,25 +61,8 @@
 
 void mt_signal_handler(int signal)
 {
-    static unsigned char	c = 0;
-	static int				bit = 0;
-	
-	// c = 0;
-	// bit	= 0;
-	if (bit < 8 && signal == SIGUSR1)
-		c += 128 >> bit;
-	bit++; 
-	if (bit == 8)
-	{
-		write(1, &c, 1);
-		// ft_putchar_fd(c, 1);
-		bit = 0;
-		c = 0;
-	}
-	if (c == '\0')
-		{
-			
-		}
+    if (signal == SIGUSR1 || signal == SIGUSR2)
+		mt_decode_binary(signal);
 }
 
 /*	https://linuxhint.com/c-sigaction-function-usage/
@@ -69,8 +84,8 @@ int	main()
 	struct sigaction	server;
 	
 	server.sa_handler = &mt_signal_handler;
-	server.sa_flags = SA_RESTART;
-	// server.sa_flags = SA_SIGINFO;
+	// server.sa_flags = SA_RESTART;
+	server.sa_flags = SA_SIGINFO;
 
 	ft_putnbr_fd(getpid(), 1);
 	ft_putchar_fd('\n', 1);
@@ -80,19 +95,3 @@ int	main()
 		pause();
 	return (0);
 }
-
-//  static unsigned char	c = 0;
-// 	static int				bit = 7;
-	
-// 	// c = 0;
-// 	// bit	= 7;
-// 	if (signal == SIGUSR1)
-// 		c += 1 << bit;
-// 	bit--; 
-// 	if (bit < 0)
-// 	{
-// 		write(1, &c, 1);
-// 		// ft_putchar_fd(c, 1);
-// 		bit = 7;
-// 		c = 0;
-// 	}
