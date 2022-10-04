@@ -6,19 +6,27 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:19:58 by kczichow          #+#    #+#             */
-/*   Updated: 2022/10/04 10:12:29 by kczichow         ###   ########.fr       */
+/*   Updated: 2022/10/04 15:27:05 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-/*	The main function in this file takes two arguments, the server PID and a
-*	user defined string.
-*?
-// void	client_handler (int signal)
-// {
-// 	printf("Clienthandler");
-// }
+/*	MT_CLIENT_HANDLER
+*	-------------------
+*	The handle is called by sigaction in the main function, when the main
+*	receives a signal.
+*/
+
+pid_t				g_server_pid;
+
+void	mt_client_handler(int signal, siginfo_t *info, void *context)
+{
+	(void)context;
+	if (g_server_pid == info->si_pid && signal == SIGUSR1)
+		ft_putstr_fd("server to client: message received\n", 1);
+}
+
 /*	MT_TRANSFER_SIGNAL
 *	--------------------	
 *	The function mt_transfer_signal encodes the character string into binary
@@ -52,13 +60,13 @@
 *	1 in the leftmost position in binary (00000001);
 *	Once, the string is sent, a terminating 0 (00000000 in binary) is sent to
 *	the server, to let it know that the transfer is finished.
-*		
+*
 *	Signals don't queue, therefore a microsecond break (usleep) is needed.
 *	The kill() function sends a signal to a process or process group specified
 *	by PID.
 */
 
-void	mt_transfer_signal(pid_t pid, char *str)
+void	mt_transfer_signal(char *str)
 {
 	int				bit;
 	unsigned char	c;
@@ -70,15 +78,9 @@ void	mt_transfer_signal(pid_t pid, char *str)
 		while (bit < 8)
 		{
 			if (c << bit & 128)
-			{
-				ft_putchar_fd('1', 1);
-				kill(pid, SIGUSR1);
-			}
+				kill(g_server_pid, SIGUSR1);
 			else
-			{
-				ft_putchar_fd('0', 1);
-				kill(pid, SIGUSR2);
-			}
+				kill(g_server_pid, SIGUSR2);
 			usleep(200);
 			bit++;
 		}
@@ -86,23 +88,25 @@ void	mt_transfer_signal(pid_t pid, char *str)
 	}
 	while (bit--)
 	{
-		ft_putchar_fd('0', 1);
-		kill(pid, SIGUSR2);
+		kill(g_server_pid, SIGUSR2);
 		usleep(200);
 	}
 }
 
+/*	MAIN
+*	-----------------
+*	The main function in this file takes two arguments, the server PID and a
+*	user defined string.
+*/
+
 int	main(int argc, char *argv[])
 {
-	// struct sigaction	client;
-	pid_t				server_pid;
+	struct sigaction			client;
 
-	// client.sa_handler = &client_handler;
-	server_pid = atoi(argv[1]);
-
-	if (argc != 3)
+	client.sa_sigaction = &mt_client_handler;
+	g_server_pid = ft_atoi(argv[1]);
+	if (argc != 3 || argv[2][0] == '\0' || g_server_pid < 1)
 		return (0);
-	// behaviour of server function to be clarified
-
-	mt_transfer_signal(server_pid, argv[2]);
+	sigaction(SIGUSR1, &client, NULL);
+	mt_transfer_signal(argv[2]);
 }

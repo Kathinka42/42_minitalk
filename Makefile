@@ -6,7 +6,7 @@
 #    By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/22 13:50:30 by kczichow          #+#    #+#              #
-#    Updated: 2022/09/26 10:27:50 by kczichow         ###   ########.fr        #
+#    Updated: 2022/10/04 15:25:30 by kczichow         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRCS		=	server.c \
 							
 OBJS		= 	${SRCS:%.c=%.o}
 CC			=	gcc
-#CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror
 
 LIBFT		=	./libft/libft.a
 LIBFT_D		=	./libft/
